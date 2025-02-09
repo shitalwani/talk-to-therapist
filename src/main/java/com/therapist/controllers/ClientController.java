@@ -36,4 +36,17 @@ public class ClientController {
         ClientGetResponseDTO getById = clientService.fetchClientById(id);
         return new ResponseEntity<>(getById,HttpStatus.OK);
     }
+
+    @PutMapping("/client/{id}")
+    public ResponseEntity<ClientResponseDTO> updateClientData(@RequestBody ClientRequestDTO clientRequestDTO,@PathVariable("id") String id){
+      ClientResponseDTO updatedData = clientService.updateClientDataById(clientRequestDTO,id);
+      return new ResponseEntity<>(updatedData,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/client/{id}")
+    public ResponseEntity<String> softDeleteUser(@PathVariable("id")String id){
+        String deletedData = clientService.deleteClientDataById(id);
+        return new ResponseEntity<>(deletedData,HttpStatus.OK);
+
+    }
 }

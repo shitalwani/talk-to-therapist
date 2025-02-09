@@ -14,4 +14,8 @@ public interface ClientService {
     List<ClientGetResponseDTO> fetchAllClients();
 
     ClientGetResponseDTO fetchClientById(String id);
+
+    ClientResponseDTO updateClientDataById(ClientRequestDTO clientRequestDTO, String id);
+
+    String deleteClientDataById(String id);
 }
