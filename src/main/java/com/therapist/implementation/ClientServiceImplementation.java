@@ -52,7 +52,7 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public List<ClientGetResponseDTO> fetchAllClients() {
-        List<ClientsEntity> clientsEntities = clientRepository.findAll();
+        List<ClientsEntity> clientsEntities = clientRepository.findByDeletedFalse();
 
         List<ClientGetResponseDTO> clientResponseDTOList = new ArrayList<>();
 
@@ -75,9 +75,9 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public ClientGetResponseDTO fetchClientById(String id) {
-       Optional<ClientsEntity> clientsEntity = clientRepository.findById(id);
+       Optional<ClientsEntity> clientsEntity = clientRepository.findByIdAndDeletedFalse(id);
        if(clientsEntity.isEmpty()){
-           throw new RuntimeException("record not found for id: " +id);
+           throw new HandleBadRequestError("record not found for id: " +id);
        }
 
         ClientGetResponseDTO clientGetResponseDTO = new ClientGetResponseDTO();
@@ -94,9 +94,9 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public ClientResponseDTO updateClientDataById(ClientRequestDTO clientRequestDTO, String id) {
-        Optional<ClientsEntity> clientsEntity = clientRepository.findById(id);
+        Optional<ClientsEntity> clientsEntity = clientRepository.findByIdAndDeletedFalse(id);
         if(clientsEntity.isEmpty()){
-            throw new RuntimeException("record not found for id : " +id);
+            throw new HandleBadRequestError("record not found for id : " +id);
         }
 
         clientsEntity.get().setName(clientRequestDTO.getName());
