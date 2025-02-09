@@ -41,5 +41,10 @@ public class ClientsEntity {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
+    @Column(nullable = true)
+    private Boolean deleted = false;  // Flag to indicate if the record is deleted
+
+    @Column(nullable = true)
+    private LocalDateTime deletedAt;  // Timestamp for soft deletion
 
 }

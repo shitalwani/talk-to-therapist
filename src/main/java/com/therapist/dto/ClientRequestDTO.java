@@ -11,4 +11,5 @@ public class ClientRequestDTO {
     private String password;
     private String address;
     private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }

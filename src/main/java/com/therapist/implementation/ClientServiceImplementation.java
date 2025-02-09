@@ -1,5 +1,6 @@
 package com.therapist.implementation;
 
+import com.therapist.Exception.HandleBadRequestError;
 import com.therapist.dto.ClientGetResponseDTO;
 import com.therapist.dto.ClientRequestDTO;
 import com.therapist.dto.ClientResponseDTO;
@@ -14,13 +15,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ClientServiceImplementation implements ClientService {
 
     @Autowired
     ClientRepository clientRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Override
     public ClientResponseDTO storeClientInformation(ClientRequestDTO clientRequestDTO) {
@@ -49,7 +52,7 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public List<ClientGetResponseDTO> fetchAllClients() {
-        List<ClientsEntity> clientsEntities = clientRepository.findAll();
+        List<ClientsEntity> clientsEntities = clientRepository.findByDeletedFalse();
 
         List<ClientGetResponseDTO> clientResponseDTOList = new ArrayList<>();
 
@@ -72,9 +75,9 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public ClientGetResponseDTO fetchClientById(String id) {
-       Optional<ClientsEntity> clientsEntity = clientRepository.findById(id);
+       Optional<ClientsEntity> clientsEntity = clientRepository.findByIdAndDeletedFalse(id);
        if(clientsEntity.isEmpty()){
-           throw new RuntimeException("record not found for id: " +id);
+           throw new HandleBadRequestError("record not found for id: " +id);
        }
 
         ClientGetResponseDTO clientGetResponseDTO = new ClientGetResponseDTO();
@@ -87,5 +90,35 @@ public class ClientServiceImplementation implements ClientService {
        clientGetResponseDTO.setCreatedAt(clientsEntity.get().getCreatedAt());
        clientGetResponseDTO.setModifiedAt(clientsEntity.get().getModifiedAt());
         return clientGetResponseDTO;
+    }
+
+    @Override
+    public ClientResponseDTO updateClientDataById(ClientRequestDTO clientRequestDTO, String id) {
+        Optional<ClientsEntity> clientsEntity = clientRepository.findByIdAndDeletedFalse(id);
+        if(clientsEntity.isEmpty()){
+            throw new HandleBadRequestError("record not found for id : " +id);
+        }
+
+        clientsEntity.get().setName(clientRequestDTO.getName());
+        clientsEntity.get().setAddress(clientRequestDTO.getAddress());
+        clientsEntity.get().setEmail(clientRequestDTO.getEmail());
+        clientsEntity.get().setMobile(clientRequestDTO.getMobile());
+        clientsEntity.get().setPassword(clientRequestDTO.getPassword());
+
+        clientRepository.save(clientsEntity.get());
+        return modelMapper.map(clientsEntity.get(),ClientResponseDTO.class);
+    }
+
+    @Override
+    public String deleteClientDataById(String id) {
+        Optional<ClientsEntity> clientsEntity = clientRepository.findByIdAndDeletedFalse(id);
+        if (clientsEntity.isPresent()) {
+            clientsEntity.get().setDeleted(true);
+            clientsEntity.get().setDeletedAt(LocalDateTime.now());
+            clientRepository.save(clientsEntity.get());
+            return "Record deleted successfully";
+        }else{
+            throw new HandleBadRequestError("Record already deleted");
+        }
     }
 }
