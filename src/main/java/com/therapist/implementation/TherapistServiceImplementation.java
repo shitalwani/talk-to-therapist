@@ -4,7 +4,9 @@ import com.therapist.Exception.HandleBadRequestError;
 import com.therapist.dto.TherapistRequestDTO;
 import com.therapist.dto.TherapistResponseDTO;
 import com.therapist.models.TherapistEntity;
+import com.therapist.models.UserEntity;
 import com.therapist.repositories.TherapistRepository;
+import com.therapist.repositories.UserRepository;
 import com.therapist.services.TherapistService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class TherapistServiceImplementation implements TherapistService {
     TherapistRepository therapistRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     ModelMapper modelMapper;
 
     @Override
@@ -33,7 +38,14 @@ public class TherapistServiceImplementation implements TherapistService {
         therapistEntity.setMobile(therapistRequestDTO.getMobile());
         therapistEntity.setYearOfExperience(therapistRequestDTO.getYearOfExperience());
         therapistEntity.setAddress(therapistRequestDTO.getAddress());
-        therapistEntity.setUserId(therapistRequestDTO.getUserId());
+
+        Optional<UserEntity> userEntityOptional =  userRepository.findById(therapistRequestDTO.getUserId());
+        if(userEntityOptional.isEmpty()){
+            throw new HandleBadRequestError("user_id not found");
+        }
+
+
+        therapistEntity.setUserId(userEntityOptional.get().getUserId());
         therapistRepository.save(therapistEntity);
 
         return modelMapper.map(therapistEntity,TherapistResponseDTO.class);
@@ -74,6 +86,8 @@ public class TherapistServiceImplementation implements TherapistService {
        therapistResponseDTO.setLastname(therapistEntity.get().getLastname());
        therapistResponseDTO.setAddress(therapistEntity.get().getAddress());
        therapistResponseDTO.setMobile(therapistEntity.get().getMobile());
+
+
        therapistResponseDTO.setUserId(therapistEntity.get().getUserId());
        therapistResponseDTO.setYearOfExperience(therapistEntity.get().getYearOfExperience());
        therapistResponseDTO.setCreatedAt(therapistEntity.get().getCreatedAt());
