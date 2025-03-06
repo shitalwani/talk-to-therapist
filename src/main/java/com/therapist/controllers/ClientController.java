@@ -7,6 +7,7 @@ import com.therapist.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ClientController {
     ClientService clientService;
 
     @PostMapping("/client/add")
+    @PreAuthorize("hasAnyRole('CLIENT', 'THERAPIST')") // Both clients & therapists can access
     public ResponseEntity<ClientResponseDTO> createClient(@RequestBody ClientRequestDTO clientRequestDTO){
        ClientResponseDTO add = clientService.storeClientInformation(clientRequestDTO);
         return new ResponseEntity<>(add, HttpStatus.CREATED);
@@ -26,6 +28,7 @@ public class ClientController {
     }
 
     @GetMapping("/clients")
+    @PreAuthorize("hasRole('THERAPIST')") // Both clients & therapists can access
     public ResponseEntity<List<ClientGetResponseDTO>> fetchClients(){
         List<ClientGetResponseDTO> getList = clientService.fetchAllClients();
         return new ResponseEntity<>(getList,HttpStatus.OK);

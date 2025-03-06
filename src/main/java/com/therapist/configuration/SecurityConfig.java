@@ -1,14 +1,21 @@
 package com.therapist.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
@@ -17,24 +24,29 @@ public class SecurityConfig {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
-
     @Bean
-    public void configure(HttpSecurity http) throws Exception {
-        // Disable CSRF for stateless REST API
-        http
-                .csrf().disable()  // Disable CSRF protection (deprecated, but still works for now)
-                .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()  // Open access to authentication endpoints
-                .antMatchers("/admin/**").hasRole("ADMIN")  // Admin access only
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")  // User & Admin access
-                .anyRequest().authenticated()  // All other requests require authentication
-                .and()
-                .addFilterBefore(jwtRequestFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);  // Add JWTmePasswordAuthenticationFilter
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("Configuring security...");
+
+        return http
+                .csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v1/api/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtRequestFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
 
+    // Password encoder bean for encoding user passwords
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // To encode user passwords
+        return new BCryptPasswordEncoder();  // Use BCrypt for password encoding
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

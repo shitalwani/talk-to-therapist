@@ -1,0 +1,39 @@
+Merge branch 'master' into TTTHE-11
+
+# Conflicts:
+#	src/main/java/com/therapist/models/UserEntity.java
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please run
+#	git update-ref -d MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch TTTHE-11
+# Your branch is up to date with 'origin/TTTHE-11'.
+#
+# All conflicts fixed but you are still merging.
+#
+# Changes to be committed:
+#	new file:   src/main/java/com/therapist/configuration/Roles.java
+#	new file:   src/main/java/com/therapist/controllers/UserController.java
+#	modified:   src/main/java/com/therapist/dto/ClientGetResponseDTO.java
+#	modified:   src/main/java/com/therapist/dto/ClientRequestDTO.java
+#	modified:   src/main/java/com/therapist/dto/ClientResponseDTO.java
+#	new file:   src/main/java/com/therapist/dto/LoginRequestDTO.java
+#	new file:   src/main/java/com/therapist/dto/LoginResponseDTO.java
+#	modified:   src/main/java/com/therapist/dto/TherapistRequestDTO.java
+#	new file:   src/main/java/com/therapist/dto/UserRequestDTO.java
+#	new file:   src/main/java/com/therapist/dto/UserResponseDTO.java
+#	modified:   src/main/java/com/therapist/implementation/ClientServiceImplementation.java
+#	modified:   src/main/java/com/therapist/implementation/TherapistServiceImplementation.java
+#	new file:   src/main/java/com/therapist/implementation/UserServiceImplementation.java
+#	modified:   src/main/java/com/therapist/models/ClientsEntity.java
+#	modified:   src/main/java/com/therapist/models/TherapistEntity.java
+#	modified:   src/main/java/com/therapist/models/UserEntity.java
+#	new file:   src/main/java/com/therapist/repositories/UserRepository.java
+#	new file:   src/main/java/com/therapist/services/UserService.java
+#
