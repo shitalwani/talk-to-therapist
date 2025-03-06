@@ -4,7 +4,9 @@ import com.therapist.Exception.HandleBadRequestError;
 import com.therapist.dto.TherapistRequestDTO;
 import com.therapist.dto.TherapistResponseDTO;
 import com.therapist.models.TherapistEntity;
+import com.therapist.models.UserEntity;
 import com.therapist.repositories.TherapistRepository;
+import com.therapist.repositories.UserRepository;
 import com.therapist.services.TherapistService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class TherapistServiceImplementation implements TherapistService {
     TherapistRepository therapistRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     ModelMapper modelMapper;
 
     @Override
@@ -33,7 +38,13 @@ public class TherapistServiceImplementation implements TherapistService {
         therapistEntity.setMobile(therapistRequestDTO.getMobile());
         therapistEntity.setYearOfExperience(therapistRequestDTO.getYearOfExperience());
         therapistEntity.setAddress(therapistRequestDTO.getAddress());
-        therapistEntity.setUserId(therapistRequestDTO.getUserId());
+
+        Optional<UserEntity> userEntityOptional =  userRepository.findById(therapistRequestDTO.getUserId());
+        if(userEntityOptional.isEmpty()){
+            throw new HandleBadRequestError("user_id not found");
+        }
+
+        therapistEntity.setUserEntity(userEntityOptional.get());
         therapistRepository.save(therapistEntity);
 
         return modelMapper.map(therapistEntity,TherapistResponseDTO.class);
@@ -50,7 +61,7 @@ public class TherapistServiceImplementation implements TherapistService {
             therapistResponseDTO.setFirstname(therapistEntity1.getFirstname());
             therapistResponseDTO.setLastname(therapistEntity1.getLastname());
             therapistResponseDTO.setMobile(therapistEntity1.getMobile());
-            therapistResponseDTO.setUserId(therapistEntity1.getUserId());
+            therapistResponseDTO.setUserId(therapistEntity1.getUserEntity().getUserId());
             therapistResponseDTO.setAddress(therapistEntity1.getAddress());
             therapistResponseDTO.setYearOfExperience(therapistEntity1.getYearOfExperience());
             therapistResponseDTO.setCreatedAt(therapistEntity1.getCreatedAt());
@@ -74,7 +85,9 @@ public class TherapistServiceImplementation implements TherapistService {
        therapistResponseDTO.setLastname(therapistEntity.get().getLastname());
        therapistResponseDTO.setAddress(therapistEntity.get().getAddress());
        therapistResponseDTO.setMobile(therapistEntity.get().getMobile());
-       therapistResponseDTO.setUserId(therapistEntity.get().getUserId());
+
+
+       therapistResponseDTO.setUserId(therapistEntity.get().getUserEntity().getUserId());
        therapistResponseDTO.setYearOfExperience(therapistEntity.get().getYearOfExperience());
        therapistResponseDTO.setCreatedAt(therapistEntity.get().getCreatedAt());
        therapistResponseDTO.setUpdatedAt(therapistEntity.get().getUpdatedAt());
@@ -90,11 +103,16 @@ public class TherapistServiceImplementation implements TherapistService {
             throw new HandleBadRequestError("Record not found gor given Id: "+therapistId);
         }
 
+        Optional<UserEntity> userEntityOptional = userRepository.findById(therapistRequestDTO.getUserId());
+        if(userEntityOptional.isEmpty()){
+            throw new HandleBadRequestError("Record not found for user id: "+therapistRequestDTO.getUserId());
+        }
+
         therapistEntity.get().setFirstname(therapistRequestDTO.getFirstname());
         therapistEntity.get().setLastname(therapistRequestDTO.getLastname());
         therapistEntity.get().setAddress(therapistRequestDTO.getAddress());
         therapistEntity.get().setMobile(therapistRequestDTO.getMobile());
-        therapistEntity.get().setUserId(therapistRequestDTO.getUserId());
+        therapistEntity.get().setUserEntity(userEntityOptional.get());
         therapistEntity.get().setYearOfExperience(therapistRequestDTO.getYearOfExperience());
         therapistRepository.save(therapistEntity.get());
 

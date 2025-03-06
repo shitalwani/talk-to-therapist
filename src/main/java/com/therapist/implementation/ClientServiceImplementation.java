@@ -33,9 +33,7 @@ public class ClientServiceImplementation implements ClientService {
         clientsEntity.setName(clientRequestDTO.getName());
 
         clientsEntity.setMobile(clientRequestDTO.getMobile());
-        clientsEntity.setEmail(clientRequestDTO.getEmail());
         clientsEntity.setAddress(clientRequestDTO.getAddress());
-        clientsEntity.setPassword(clientRequestDTO.getPassword());
 
         LocalDateTime now = LocalDateTime.now();
         clientsEntity.setCreatedAt(now);
@@ -63,9 +61,7 @@ public class ClientServiceImplementation implements ClientService {
           clientGetResponseDTO.setId(clientsEntity.getId());
           clientGetResponseDTO.setName(clientsEntity.getName());
           clientGetResponseDTO.setMobile(clientsEntity.getMobile());
-          clientGetResponseDTO.setEmail(clientsEntity.getEmail());
           clientGetResponseDTO.setAddress(clientsEntity.getAddress());
-          clientGetResponseDTO.setPassword(clientsEntity.getPassword());
           clientGetResponseDTO.setCreatedAt(clientsEntity.getCreatedAt());
           clientGetResponseDTO.setModifiedAt(clientsEntity.getModifiedAt());
           clientResponseDTOList.add(clientGetResponseDTO);
@@ -83,10 +79,8 @@ public class ClientServiceImplementation implements ClientService {
         ClientGetResponseDTO clientGetResponseDTO = new ClientGetResponseDTO();
        clientGetResponseDTO.setId(clientsEntity.get().getId());
        clientGetResponseDTO.setName(clientsEntity.get().getName());
-       clientGetResponseDTO.setEmail(clientsEntity.get().getEmail());
        clientGetResponseDTO.setMobile(clientsEntity.get().getMobile());
        clientGetResponseDTO.setAddress(clientsEntity.get().getAddress());
-       clientGetResponseDTO.setPassword(clientsEntity.get().getPassword());
        clientGetResponseDTO.setCreatedAt(clientsEntity.get().getCreatedAt());
        clientGetResponseDTO.setModifiedAt(clientsEntity.get().getModifiedAt());
         return clientGetResponseDTO;
@@ -101,9 +95,7 @@ public class ClientServiceImplementation implements ClientService {
 
         clientsEntity.get().setName(clientRequestDTO.getName());
         clientsEntity.get().setAddress(clientRequestDTO.getAddress());
-        clientsEntity.get().setEmail(clientRequestDTO.getEmail());
         clientsEntity.get().setMobile(clientRequestDTO.getMobile());
-        clientsEntity.get().setPassword(clientRequestDTO.getPassword());
 
         clientRepository.save(clientsEntity.get());
         return modelMapper.map(clientsEntity.get(),ClientResponseDTO.class);

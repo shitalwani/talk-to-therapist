@@ -18,8 +18,9 @@ public class TherapistEntity {
     @Column(name = "therapist_id")
     private String therapistId;
 
-    @Column(name = "user_id")
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id") // This will create a foreign key column in the TherapistEntity table
+    private UserEntity userEntity;
 
     @Column(name = "firstname")
     private String firstname;
