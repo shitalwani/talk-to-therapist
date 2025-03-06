@@ -1,6 +1,7 @@
 package com.therapist.controllers;
 
 import com.therapist.dto.LoginRequestDTO;
+import com.therapist.dto.LoginResponseDTO;
 import com.therapist.dto.UserRequestDTO;
 import com.therapist.dto.UserResponseDTO;
 import com.therapist.services.UserService;
@@ -26,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequestDTO loginRequestDTO){
-       String login =  userService.checkUserCredential(loginRequestDTO);
-        return new ResponseEntity<>(login,HttpStatus.CREATED);
+    public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequestDTO){
+        LoginResponseDTO login =  userService.checkUserCredential(loginRequestDTO);
+        return new ResponseEntity<>(login,HttpStatus.OK);
     }
 }

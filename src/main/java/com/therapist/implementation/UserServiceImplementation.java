@@ -1,6 +1,8 @@
 package com.therapist.implementation;
 
+import com.therapist.Exception.HandleBadRequestError;
 import com.therapist.dto.LoginRequestDTO;
+import com.therapist.dto.LoginResponseDTO;
 import com.therapist.dto.UserRequestDTO;
 import com.therapist.dto.UserResponseDTO;
 import com.therapist.models.UserEntity;
@@ -25,23 +27,19 @@ public class UserServiceImplementation implements UserService {
         userEntity.setUsername(userRequestDTO.getUsername());
         userEntity.setPassword(userRequestDTO.getPassword());
         userEntity.setEmail(userRequestDTO.getEmail());
-        //userEntity.setRole(String.valueOf(userRequestDTO.getRoles()));
         userEntity.setRoles(String.valueOf(userRequestDTO.getRoles()));
-       // userEntity.setRole(userRequestDTO.getRole());
         userRepository.save(userEntity);
-
         return modelMapper.map(userEntity,UserResponseDTO.class);
     }
 
     @Override
-    public String checkUserCredential(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO checkUserCredential(LoginRequestDTO loginRequestDTO) {
        UserEntity userEntity = userRepository.findByUsernameAndPassword(loginRequestDTO.getUsername(),loginRequestDTO.getPassword());
        if(userEntity.getUsername().equals(loginRequestDTO.getUsername()) &&
                userEntity.getPassword().equals(loginRequestDTO.getPassword())){
-           return "user login successfully";
-
+            return new LoginResponseDTO("","");
        }else{
-          return "invalid credentials";
+        throw new HandleBadRequestError("Invalid Credentials");
        }
     }
 }

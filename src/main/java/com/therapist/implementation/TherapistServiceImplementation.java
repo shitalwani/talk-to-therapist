@@ -44,8 +44,7 @@ public class TherapistServiceImplementation implements TherapistService {
             throw new HandleBadRequestError("user_id not found");
         }
 
-
-        therapistEntity.setUserId(userEntityOptional.get().getUserId());
+        therapistEntity.setUserEntity(userEntityOptional.get());
         therapistRepository.save(therapistEntity);
 
         return modelMapper.map(therapistEntity,TherapistResponseDTO.class);
@@ -62,7 +61,7 @@ public class TherapistServiceImplementation implements TherapistService {
             therapistResponseDTO.setFirstname(therapistEntity1.getFirstname());
             therapistResponseDTO.setLastname(therapistEntity1.getLastname());
             therapistResponseDTO.setMobile(therapistEntity1.getMobile());
-            therapistResponseDTO.setUserId(therapistEntity1.getUserId());
+            therapistResponseDTO.setUserId(therapistEntity1.getUserEntity().getUserId());
             therapistResponseDTO.setAddress(therapistEntity1.getAddress());
             therapistResponseDTO.setYearOfExperience(therapistEntity1.getYearOfExperience());
             therapistResponseDTO.setCreatedAt(therapistEntity1.getCreatedAt());
@@ -88,7 +87,7 @@ public class TherapistServiceImplementation implements TherapistService {
        therapistResponseDTO.setMobile(therapistEntity.get().getMobile());
 
 
-       therapistResponseDTO.setUserId(therapistEntity.get().getUserId());
+       therapistResponseDTO.setUserId(therapistEntity.get().getUserEntity().getUserId());
        therapistResponseDTO.setYearOfExperience(therapistEntity.get().getYearOfExperience());
        therapistResponseDTO.setCreatedAt(therapistEntity.get().getCreatedAt());
        therapistResponseDTO.setUpdatedAt(therapistEntity.get().getUpdatedAt());
@@ -104,11 +103,16 @@ public class TherapistServiceImplementation implements TherapistService {
             throw new HandleBadRequestError("Record not found gor given Id: "+therapistId);
         }
 
+        Optional<UserEntity> userEntityOptional = userRepository.findById(therapistRequestDTO.getUserId());
+        if(userEntityOptional.isEmpty()){
+            throw new HandleBadRequestError("Record not found for user id: "+therapistRequestDTO.getUserId());
+        }
+
         therapistEntity.get().setFirstname(therapistRequestDTO.getFirstname());
         therapistEntity.get().setLastname(therapistRequestDTO.getLastname());
         therapistEntity.get().setAddress(therapistRequestDTO.getAddress());
         therapistEntity.get().setMobile(therapistRequestDTO.getMobile());
-        therapistEntity.get().setUserId(therapistRequestDTO.getUserId());
+        therapistEntity.get().setUserEntity(userEntityOptional.get());
         therapistEntity.get().setYearOfExperience(therapistRequestDTO.getYearOfExperience());
         therapistRepository.save(therapistEntity.get());
 

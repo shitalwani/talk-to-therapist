@@ -3,7 +3,6 @@ package com.therapist.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -21,14 +20,12 @@ public class ClientsEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "email")
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id") // This will create a foreign key column in the TherapistEntity table
+    private UserEntity userEntity;
 
     @Column(name = "mobile")
     private String mobile;
-
-    @Column(name = "password")
-    private String password;
 
     @Column(name = "address")
     private String address;

@@ -1,6 +1,5 @@
 package com.therapist.models;
 
-import com.therapist.configuration.Roles;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,13 +14,10 @@ public class UserEntity {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
-    @OneToMany(mappedBy = "therapistEntity", cascade = CascadeType.ALL)
-    private TherapistEntity therapistEntity;
-
-    @Column(name = "username")
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
     @Column(name = "password")
@@ -30,6 +26,7 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "roles")
     private String roles;
 
     @Column(name = "created_at")

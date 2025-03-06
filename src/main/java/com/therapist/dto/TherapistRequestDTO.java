@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 @Data
 public class TherapistRequestDTO {
-
     private String therapistId;
     private Integer userId;
     private String firstname;
@@ -14,5 +13,4 @@ public class TherapistRequestDTO {
     private Integer yearOfExperience;
     private String mobile;
     private String address;
-
 }
