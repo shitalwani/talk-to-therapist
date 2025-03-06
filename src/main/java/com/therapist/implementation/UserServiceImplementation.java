@@ -1,6 +1,7 @@
 package com.therapist.implementation;
 
 import com.therapist.Exception.HandleBadRequestError;
+import com.therapist.configuration.JwtUtil;
 import com.therapist.dto.LoginRequestDTO;
 import com.therapist.dto.LoginResponseDTO;
 import com.therapist.dto.UserRequestDTO;
@@ -10,6 +11,8 @@ import com.therapist.repositories.UserRepository;
 import com.therapist.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +23,9 @@ public class UserServiceImplementation implements UserService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Override
     public UserResponseDTO storeUserDetails(UserRequestDTO userRequestDTO) {
@@ -37,7 +43,9 @@ public class UserServiceImplementation implements UserService {
        UserEntity userEntity = userRepository.findByUsernameAndPassword(loginRequestDTO.getUsername(),loginRequestDTO.getPassword());
        if(userEntity.getUsername().equals(loginRequestDTO.getUsername()) &&
                userEntity.getPassword().equals(loginRequestDTO.getPassword())){
-            return new LoginResponseDTO("","");
+
+            String token = jwtUtil.generateToken(loginRequestDTO.getUsername(), userEntity.getRoles());
+            return new LoginResponseDTO("SUCCESS", token);
        }else{
         throw new HandleBadRequestError("Invalid Credentials");
        }
