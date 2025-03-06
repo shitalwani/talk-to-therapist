@@ -47,6 +47,5 @@ public class ClientController {
     public ResponseEntity<String> softDeleteUser(@PathVariable("id")String id){
         String deletedData = clientService.deleteClientDataById(id);
         return new ResponseEntity<>(deletedData,HttpStatus.OK);
-
     }
 }
